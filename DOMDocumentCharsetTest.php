@@ -51,4 +51,25 @@ EOS;
 		$this->assertTrue( ( strpos( $this->dom->saveHTML(),
 			'<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' ) !== false ) );
 	}
+
+	public function testUtf8EncodingIsPreservedInHtml5Doc() {
+		$i18n_str = 'Iñtërnâtiônàlizætiøn';
+
+		$html = <<<EOS
+<!doctype html>
+<head>
+  <meta charset="UTF-8">
+  <title>html 5 test</title>
+ </head>
+ <body>
+<h1 id="title">$i18n_str</h1>
+</body>
+</html>
+EOS;
+
+		$this->dom->loadHTMLCharset( $html );
+		$dom_element = $this->dom->getElementById( 'title' );
+
+		$this->assertEquals( $i18n_str, $dom_element->textContent );
+	}
 }
